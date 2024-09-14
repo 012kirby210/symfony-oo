@@ -1,20 +1,21 @@
 <?php
-require __DIR__.'/functions.php';
+require __DIR__. '/./bootstrap.php';
 
-$ships = get_ships();
+$container = new Container($configuration);
+$pdo = $container->getPDO();
+$shipLoader = $container->getShipLoader();
+//$ships = $shipLoader->getShips();
 
-$ship1Name = isset($_POST['ship1_name']) ? $_POST['ship1_name'] : null;
+$ship1Id = isset($_POST['ship1_id']) ? $_POST['ship1_id'] : null;
 $ship1Quantity = isset($_POST['ship1_quantity']) ? $_POST['ship1_quantity'] : 1;
-$ship2Name = isset($_POST['ship2_name']) ? $_POST['ship2_name'] : null;
+$ship2Id = isset($_POST['ship2_id']) ? $_POST['ship2_id'] : null;
 $ship2Quantity = isset($_POST['ship2_quantity']) ? $_POST['ship2_quantity'] : 1;
 
-if (!$ship1Name || !$ship2Name) {
-    header('Location: /index.php?error=missing_data');
-    die;
-}
+$ship1 = $shipLoader->findOneById($ship1Id);
+$ship2 = $shipLoader->findOneById($ship2Id);
 
-if (!isset($ships[$ship1Name]) || !isset($ships[$ship2Name])) {
-    header('Location: /index.php?error=bad_ships');
+if (!$ship1 || !$ship2) {
+    header('Location: /index.php?error=missing_data');
     die;
 }
 
@@ -23,10 +24,8 @@ if ($ship1Quantity <= 0 || $ship2Quantity <= 0) {
     die;
 }
 
-$ship1 = $ships[$ship1Name];
-$ship2 = $ships[$ship2Name];
-
-$outcome = battle($ship1, $ship1Quantity, $ship2, $ship2Quantity);
+$battleManager = $container->getBattleManager();
+$outcome = $battleManager->battle($ship1, $ship1Quantity, $ship2, $ship2Quantity);
 ?>
 
 <html>
@@ -66,24 +65,32 @@ $outcome = battle($ship1, $ship1Quantity, $ship2, $ship2Quantity);
             <div class="result-box center-block">
                 <h3 class="text-center audiowide">
                     Winner:
-                    <?php if ($outcome['winning_ship']): ?>
-                        <?php echo $outcome['winning_ship']->getName(); ?>
+                    <?php if ($outcome->isThereAWinner()): ?>
+                        <?php echo $outcome->getWinningShip()->getName(); ?>
                     <?php else: ?>
                         Nobody
                     <?php endif; ?>
                 </h3>
                 <p class="text-center">
-                    <?php if ($outcome['winning_ship'] == null): ?>
+                    <?php if (! $outcome->isThereAWinner()): ?>
                         Both ships destroyed each other in an epic battle to the end.
                     <?php else: ?>
-                        The <?php echo $outcome['winning_ship']->getName(); ?>
-                        <?php if ($outcome['used_jedi_powers']): ?>
+                        The <?php echo $outcome->getWinningShip()->getName(); ?>
+                        <?php if ($outcome->wereJediPowerUsed()): ?>
                             used its Jedi Powers for a stunning victory!
                         <?php else: ?>
-                            overpowered and destroyed the <?php echo $outcome['losing_ship']->getName() ?>s
+                            overpowered and destroyed the <?php echo $outcome->getLoosingShip()->getName() ?>s
                         <?php endif; ?>
                     <?php endif; ?>
                 </p>
+
+                <h3>Ship Health</h3>
+                <dl class="dl-horizontal">
+                    <dt><?= $ship1->getName() ?></dt>
+                    <dd><?= $ship1->getStrength() ?></dd>
+                    <dt><?= $ship2->getName() ?></dt>
+                    <dd><?= $ship2->getStrength() ?></dd>
+                </dl>
             </div>
             <a href="/index.php"><p class="text-center"><i class="fa fa-undo"></i> Battle again</p></a>
         

@@ -9,6 +9,8 @@ class Ship
 
     private $underRepair = false;
 
+    private int $id;
+
     public  function __construct($name)
     {
         $this->underRepair = (50 <= random_int(1,100));
@@ -93,6 +95,16 @@ class Ship
     public function isUnderRepair(): bool
     {
         return $this->underRepair;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
 }
