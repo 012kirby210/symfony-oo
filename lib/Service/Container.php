@@ -7,6 +7,8 @@ class Container
     private ?PDO $pdo = null;
     private ?ShipLoader $shipLoader = null;
     private ?BattleManager $battleManager = null;
+
+    private ?ShipStorageInterface $shipStorage = null;
     public function __construct(private array $configuration)
     {}
 
@@ -18,10 +20,19 @@ class Container
         return $this->pdo;
     }
 
+    public function getShipStorage(): ShipStorageInterface
+    {
+        if ( $this->shipStorage === null ){
+//            $this->shipStorage = new PDOShipStorage($this->getPDO());
+            $this->shipStorage = new JsonFileShipStorage(__DIR__ . '/../../resources/ships.json');
+        }
+        return $this->shipStorage;
+    }
+
     public function getShipLoader(): ShipLoader
     {
         if (!$this->shipLoader) {
-            $this->shipLoader = new ShipLoader($this->getPDO());
+            $this->shipLoader = new ShipLoader($this->getShipStorage());
         }
         return $this->shipLoader;
     }

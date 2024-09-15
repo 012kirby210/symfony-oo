@@ -6,6 +6,9 @@ $pdo = $container->getPDO();
 $shipLoader = $container->getShipLoader();
 $ships = $shipLoader->getShips();
 
+$brokenShip = new BrokenShp('broken');
+$ships[] = $brokenShip;
+
 $errorMessage = '';
 if (isset($_GET['error'])) {
     switch ($_GET['error']) {
@@ -64,6 +67,7 @@ if (isset($_GET['error'])) {
                         <th>Jedi Factor</th>
                         <th>Strength</th>
                         <th>Under repair</th>
+                        <th>Type</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,6 +79,7 @@ if (isset($_GET['error'])) {
                             <td><?php echo $ship->getJediFactor(); ?></td>
                             <td><?php echo $ship->getStrength(); ?></td>
                             <td><?php echo $ship->isUnderRepair() ? '<i class="fa fa-cloud"></i>' : '<i class="fa fa-sun-o"></i>'; ?></td>
+                            <td><?php echo $ship->getType(); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

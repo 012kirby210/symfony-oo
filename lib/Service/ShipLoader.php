@@ -3,15 +3,15 @@
 class ShipLoader
 {
 
-    public function __construct(private PDO $pdo)
+    public function __construct(private ShipStorageInterface $shipStorage)
     {}
 
     /**
-     * @return Ship[]
+     * @return AbstractShip[]
      */
     public function getShips(): array
     {
-        $shipsData = $this->queryForShips();
+        $shipsData = $this->shipStorage->fetchAllShipsData();
         $ships = array();
         foreach($shipsData as $shipData){
             $ship = $this->createShipFromData($shipData);
@@ -21,48 +21,30 @@ class ShipLoader
         return $ships;
     }
 
-    private function queryForShips()
+    public function findOneById($id): AbstractShip|null
     {
-        $pdo = $this->getPDO();
-        $statement = $pdo->prepare('SELECT * FROM ship');
-        $statement->execute();
-        $shipsArray = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $shipsArray;
-    }
-
-    public function findOneById($id): Ship|null
-    {
-        $pdo = $this->getPDO();
-        $statement = $pdo->prepare('SELECT * FROM ship WHERE id = :id');
-        $statement->execute(['id' => $id]);
-        $shipData = $statement->fetch(PDO::FETCH_ASSOC);
+        $shipData = $this->shipStorage->fetchSingleShipData($id);
 
         if ( ! $shipData ){
             return null;
         }
 
         return $this->createShipFromData($shipData);
-
     }
 
-    private function createShipFromData(array $shipData): Ship
+    private function createShipFromData(array $shipData): AbstractShip
     {
-        $ship = new Ship($shipData['name']);
+        if ($shipData['team'] === 'rebel'){
+            $ship = new RebelShip($shipData['name']);
+        }else{
+            $ship = new Ship($shipData['name']);
+            $ship->setJediFactor($shipData['jedi_factor']);
+        }
         $ship->setStrength($shipData['strength']);
-        $ship->setJediFactor($shipData['jedi_factor']);
         $ship->setWeaponPower($shipData['weapon_power']);
         $ship->setId($shipData['id']);
 
         return $ship;
     }
 
-    private function getPDO(): PDO
-    {
-//        if (!$this->pdo){
-//            $this->pdo = new PDO($this->dbDSN, $this->dbUser, $this->dbPassword);
-//            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//        }
-
-        return $this->pdo;
-    }
 }
