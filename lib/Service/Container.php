@@ -1,6 +1,8 @@
 <?php
 
+namespace Service;
 
+use PDO;
 
 class Container
 {
