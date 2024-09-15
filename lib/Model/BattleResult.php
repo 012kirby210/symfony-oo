@@ -3,10 +3,10 @@
 class BattleResult
 {
     private bool $usedJediPower;
-    private ?Ship $winningShip;
-    private ?Ship $loosingShip;
+    private ?AbstractShip $winningShip;
+    private ?AbstractShip $loosingShip;
 
-    public function __construct( bool $usedJediPower = false, ?Ship $winningShip = null, ?Ship $loosingShip = null)
+    public function __construct( bool $usedJediPower = false, ?AbstractShip $winningShip = null, ?AbstractShip $loosingShip = null)
     {
         $this->loosingShip = $loosingShip;
         $this->winningShip = $winningShip;
@@ -24,7 +24,7 @@ class BattleResult
     /**
      * @return mixed
      */
-    public function getWinningShip(): Ship | null
+    public function getWinningShip(): AbstractShip | null
     {
         return $this->winningShip;
     }
@@ -32,7 +32,7 @@ class BattleResult
     /**
      * @return mixed
      */
-    public function getLoosingShip(): Ship | null
+    public function getLoosingShip(): AbstractShip | null
     {
         return $this->loosingShip;
     }
