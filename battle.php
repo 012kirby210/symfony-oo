@@ -25,7 +25,8 @@ if ($ship1Quantity <= 0 || $ship2Quantity <= 0) {
 }
 
 $battleManager = $container->getBattleManager();
-$outcome = $battleManager->battle($ship1, $ship1Quantity, $ship2, $ship2Quantity);
+$battleType = $_POST['battle_type']?? 'normal';
+$outcome = $battleManager->battle($ship1, $ship1Quantity, $ship2, $ship2Quantity, $battleType);
 ?>
 
 <html>
