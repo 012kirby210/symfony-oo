@@ -4,6 +4,7 @@ namespace Model;
 
 use ArrayAccess;
 use ArrayIterator;
+use ArrayObject;
 use IteratorAggregate;
 use Traversable;
 
@@ -40,7 +41,7 @@ class ShipCollection implements ArrayAccess, IteratorAggregate
 
     public function getIterator(): Traversable
     {
-        return new Arrayiterator($this->ships);
+        return new ArrayIterator(new ArrayObject($this->ships));
     }
 
     public function removeAllBrokenShips()

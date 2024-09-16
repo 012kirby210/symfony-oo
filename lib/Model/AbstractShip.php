@@ -10,7 +10,7 @@ abstract class AbstractShip
     private $weaponPower = 0;
     private $strength = 0;
 
-    private int $id;
+    private int $id = 0;
 
     public function __construct($name)
     {
