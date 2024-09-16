@@ -2,7 +2,9 @@
 
 namespace Model;
 
-class BattleResult
+use ArrayAccess;
+
+class BattleResult implements ArrayAccess
 {
     private bool $usedJediPower;
     private ?AbstractShip $winningShip;
@@ -45,4 +47,23 @@ class BattleResult
     }
 
 
+    public function offsetExists(mixed $offset): bool
+    {
+        return property_exists($this, $offset);
+    }
+
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->$offset;
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        $this->offsetExists($offset) && $this->$offset = $value;
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        $this->offsetExists($offset) && $this->$offset = null;
+    }
 }
