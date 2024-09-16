@@ -60,9 +60,9 @@ $outcome = $battleManager->battle($ship1, $ship1Quantity, $ship2, $ship2Quantity
                 <h2 class="text-center">The Matchup:</h2>
                 <p class="text-center">
                     <br>
-                    <?php echo $ship1Quantity; ?> <?php echo $ship1->getName(); ?><?php echo $ship1Quantity > 1 ? 's': ''; ?>
+                    <?php echo $ship1Quantity; ?> <?php echo $ship1; ?><?php echo $ship1Quantity > 1 ? 's': ''; ?>
                     VS.
-                    <?php echo $ship2Quantity; ?> <?php echo $ship2->getName(); ?><?php echo $ship2Quantity > 1 ? 's': ''; ?>
+                    <?php echo $ship2Quantity; ?> <?php echo $ship2; ?><?php echo $ship2Quantity > 1 ? 's': ''; ?>
                 </p>
             </div>
             <div class="result-box center-block">
@@ -78,7 +78,7 @@ $outcome = $battleManager->battle($ship1, $ship1Quantity, $ship2, $ship2Quantity
                     <?php if (! $outcome->isThereAWinner()): ?>
                         Both ships destroyed each other in an epic battle to the end.
                     <?php else: ?>
-                        The <?php echo $outcome->getWinningShip()->getName(); ?>
+                        The <?php echo $outcome['winningShip']->getName(); ?>
                         <?php if ($outcome->wereJediPowerUsed()): ?>
                             used its Jedi Powers for a stunning victory!
                         <?php else: ?>

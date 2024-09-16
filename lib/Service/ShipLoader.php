@@ -4,25 +4,29 @@ namespace Service;
 use Model\AbstractShip;
 use Model\RebelShip;
 use Model\Ship;
+use Model\ShipCollection;
 
 class ShipLoader
 {
     public function __construct(private ShipStorageInterface $shipStorage)
     {}
 
-    /**
-     * @return AbstractShip[]
-     */
-    public function getShips(): array
+    public function getShips(): ShipCollection
     {
-        $shipsData = $this->shipStorage->fetchAllShipsData();
+        try{
+            $shipsData = $this->shipStorage->fetchAllShipsData();
+        }catch(\PDOException $e){
+            trigger_error($e->getMessage());
+            $shipsData = [];
+        }
+
         $ships = array();
         foreach($shipsData as $shipData){
             $ship = $this->createShipFromData($shipData);
             $ships[$ship->getId()] = $ship;
         }
 
-        return $ships;
+        return new ShipCollection($ships);
     }
 
     public function findOneById($id): AbstractShip|null

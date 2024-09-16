@@ -2,6 +2,8 @@
 
 namespace Model;
 
+use Exception;
+
 abstract class AbstractShip
 {
     private $name;
@@ -93,5 +95,23 @@ abstract class AbstractShip
     {
         $this->id = $id;
     }
+
+    public function __toString(): string
+    {
+        return $this->getName();
+    }
+
+//    public function __get(string $property): string
+//    {
+//        if ( ! property_exists( $this, $property)){
+//            throw new Exception('property does not exist');
+//        }
+//        if ('strength'===$property){
+//            return $this->getStrength();
+//        }
+//
+//        return '';
+//
+//    }
 
 }
