@@ -25,8 +25,8 @@ class Container
     public function getShipStorage(): ShipStorageInterface
     {
         if ( $this->shipStorage === null ){
-//            $this->shipStorage = new PDOShipStorage($this->getPDO());
-            $this->shipStorage = new JsonFileShipStorage(__DIR__ . '/../../resources/ships.json');
+            $this->shipStorage = new PDOShipStorage($this->getPDO());
+//            $this->shipStorage = new JsonFileShipStorage(__DIR__ . '/../../resources/ships.json');
         }
         return $this->shipStorage;
     }
